@@ -17,4 +17,8 @@
   :stacks {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}}
  :paths ["src" "resources"]
  :deps
- {org.clojure/clojure {:mvn/version "1.10.0"}}}
+ {org.clojure/clojure {:mvn/version "1.10.0"}
+  ;; Watch for file/directory changes:
+  hawk {:mvn/version "0.2.11"}
+  ;; Keeps track of changes to files/namespaces:
+  ns-tracker {:mvn/version "0.3.1"}}}
