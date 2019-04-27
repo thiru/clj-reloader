@@ -48,7 +48,7 @@
       (pp/cl-format nil
                     "Hot code reloader started watching ~A folder~:P: ~A"
                     (count dirs)
-                    (str/join "," dirs)))
+                    (str/join ", " dirs)))
     cfg))
 
 (defn stop-watch
@@ -64,7 +64,7 @@
       (pp/cl-format nil
                     "Hot code reloader stopped watching ~A folder~:P: ~A"
                     (count (:dirs watch-config))
-                    (str/join "," (:dirs watch-config))))))
+                    (str/join ", " (:dirs watch-config))))))
 
 ;;; Primary API ===============================================================
 

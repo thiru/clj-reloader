@@ -2,4 +2,4 @@
 
 # Starts the REPL in a development-friendly mode.
 
-clojure -O:stacks -A:repl
+clojure -O:stacks -A:dev
