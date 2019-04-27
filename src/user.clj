@@ -10,4 +10,5 @@
             ;; App-Specific:
             [reloader.core :as reloader]))
 
+;; Start hot code reloader once
 (defonce hcr (reloader/start-watch ["src"]))
