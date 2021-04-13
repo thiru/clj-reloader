@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "Deleting auto-generated code directories..."
+
+rm -rf .cpcache/
+rm -rf out/
+rm -rf target/

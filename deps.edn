@@ -1,25 +1,23 @@
 {:aliases
- {;; Development-oriented REPL:
+ {;; Start dev-oriented environment:
   :dev {:extra-deps
-        {;; Better REPL with auto-complete, improved syntax highlighting,
-         ;; vim motions, etc:
-         com.bhauman/rebel-readline {:mvn/version "0.1.4"}
-         ;; nREPL middleware needed to communicate with editor plugins like
-         ;; vim-fireplace:
-         cider/cider-nrepl {:mvn/version "0.21.1"}
-         ;; Network REPL client/server:
-         nrepl {:mvn/version "0.6.0"}}
+        {;; Nicer REPL with vim bindings, etc:
+         com.bhauman/rebel-readline {:mvn/version "RELEASE"}
+         ;; nREPL middleware used by editors, etc:
+         cider/cider-nrepl {:mvn/version "RELEASE"}
+         ;; nREPL server/client:
+         nrepl/nrepl {:mvn/version "RELEASE"}
+         ;; Dynamically starts dev REPLs:
+         thiru/repl-base {:git/url "https://github.com/thiru/repl-base"
+                          :sha "cdaa0c743334f90eb36d422928c48af1dc50ae5b"}}
         :extra-paths ["dev"]
-        :main-opts ["-m" "user"]}
-  ;; Search for new versions of dependencies:
-  :outdated {:extra-deps {olical/depot {:mvn/version "1.8.2"}}
-             :main-opts ["-m" "depot.outdated.main"]}
-  ;; Prevent stack trace optimization (useful for dev):
-  :stacks {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}}
+        :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}}
  :paths ["src"]
  :deps
- {org.clojure/clojure {:mvn/version "1.10.0"}
-  ;; Watch for file/directory changes:
-  hawk {:mvn/version "0.2.11"}
-  ;; Keeps track of changes to files/namespaces:
-  ns-tracker {:mvn/version "0.3.1"}}}
+ {org.clojure/clojure {:mvn/version "1.10.3"}
+
+  ;; File-system watcher:
+  com.nextjournal/beholder {:mvn/version "1.0.0"}
+
+  ;; Namespace management utils:
+  org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
