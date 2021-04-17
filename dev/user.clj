@@ -10,14 +10,30 @@
             [clojure.string :as str]
 
             ;; Third-Party:
+            [clojure.tools.namespace.repl :as nsrepl]
             [nextjournal.beholder :as beholder]
             [repl-base.core :as repls]
 
             ;; Our Domain:
-            [reloader.core :as reloader]))
+            [reloader.core :as reloader]
+            [reloader.globals :as g]
+            [reloader.tt :as tt]))
+
+(defn reload-ns
+  "This is a work-around with tools.namespace. If this namespace is active in
+  the REPL and gets changed, the REPL will still be pointing to the old
+  namespace."
+  []
+  (println "BEFORE `user` reload")
+  (in-ns 'reloader.core)
+  (in-ns 'user)
+  (println "Reloaded `user` namespace"))
 
 (defonce init
   (do
-    (reloader/start ["src" "dev"])
-    (repls/start)))
+    (when (not (:app-initialised? @g/state))
+      (swap! g/state assoc :app-initialised? true)
+      (reloader/start ["src" "dev"] :on-change reload-ns)
+      (repls/start))))
 
+(def x 11)

@@ -5,20 +5,18 @@
 
             ;; Third-Party:
             [clojure.tools.namespace.repl :as nsrepl]
-            [nextjournal.beholder :as beholder]))
+            [nextjournal.beholder :as beholder]
+
+            ;; Our Domain:
+            [reloader.globals :as g]))
 
 ;; ## Vars
 ;; ----------------------------------------------------------------------------
 
 (declare -on-change)
 
-(def empty-watch-state {:dirs ""
-                        :instance nil})
-
-(defonce
-  ^{:doc "Contains an instance of the file-system watcher and the directories
-         being watched. This is needed in order to stop a running watcher."}
-  watch-state (atom empty-watch-state))
+(defonce init
+  (nsrepl/disable-reload! *ns*))
 
 ;; ## Primary API
 ;; ----------------------------------------------------------------------------
@@ -30,24 +28,30 @@
   * `dirs`
     * A list of directories (strings)
 
-   Returns an instance of the watcher if successfull, otherwise `nil`."
-  [dirs]
+  * `on-change`
+    * TODO
+
+  Returns an instance of the watcher if successfull, otherwise `nil`."
+  [dirs & {:keys [on-change]}]
+  (nsrepl/refresh)
   (cond
     (empty? dirs)
     (println "Not watching any directories as none were provided")
 
-    (not= empty-watch-state @watch-state)
+    (not (empty? (:fs-watcher @g/state)))
     (println "Watcher already running. Please stop existing watcher first.")
 
     :else
-    (let [watcher (apply beholder/watch -on-change dirs)]
+    (let [watcher (apply beholder/watch
+                         #(-on-change % on-change)
+                         dirs)]
       (if (nil? watcher)
         (println "Failed to start watcher on:" (str/join ", " dirs))
         (do
           (println "Started monitoring" (str/join ", " dirs)
                    "for hot code reloading")
-          (reset! watch-state {:dirs dirs
-                               :instance watcher})
+          (swap! g/state assoc :fs-watcher {:dirs dirs
+                                            :instance watcher})
           watcher)))))
 
 (defn stop
@@ -55,15 +59,16 @@
 
   Returns `true` if watching stopped successfully, otherwise `false`."
   []
-  (if (= empty-watch-state @watch-state)
+  (if (empty? (:fs-watcher @g/state))
     (do
       (println "No file-system watcher currently running.")
       false)
     (do
-      (beholder/stop (:instance @watch-state))
-      (println "Stopped monitoring" (str/join ", " (:dirs @watch-state))
+      (beholder/stop (-> @g/state :fs-watcher :instance))
+      (println "Stopped monitoring" (str/join ", "
+                                              (-> @g/state :fs-watcher :dirs))
                "for hot code reloading")
-      (reset! watch-state empty-watch-state)
+      (swap! g/state assoc :fs-watcher {})
       true)))
 
 (defn restart
@@ -71,16 +76,39 @@
 
    Returns an instance of the watcher if successfull, otherwise `nil`."
   []
-  (if (= empty-watch-state @watch-state)
+  (if (empty? (:fs-watcher @g/state))
     (println "Not able to restart watcher as it was never originally started")
-    (let [curr-dirs (:dirs @watch-state)]
+    (let [curr-dirs (-> @g/state :fs-watcher :dirs)]
       (and (stop)
            (start curr-dirs)))))
 
 ;; ## Helpers
 ;; ----------------------------------------------------------------------------
 
+(defn do-on-change
+  []
+  (println "do on change worked"))
+
 (defn -on-change
-  "TODO"
-  [info]
-  (println "INFO:" info))
+  "Handle a file-system change event."
+  [info on-change]
+  (let [file-name (-> info :path .getFileName str (or ""))]
+    (when (and info
+               ;; We're only interested in modified and deleted events. Create
+               ;; events are superfluous as they're always immediately
+               ;; proceeded by a modified event.
+               (or (= :modify (:type info))
+                   (= :delete (:type info)))
+               (or (str/ends-with? file-name "clj")
+                   (str/ends-with? file-name "cljc")))
+      (println (format "File '%s' was %s - "
+                       file-name
+                       (condp = (:type info)
+                         :modify "modified"
+                         :delete "deleted"
+                         (name (:type info)))))
+      (println "before refresh")
+      (nsrepl/refresh :after 'reloader.core/do-on-change))))
+      ;(nsrepl/refresh :after 'user/reload-ns))))
+      ;(println "after refresh")
+      ;(on-change))))

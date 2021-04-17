@@ -2,14 +2,15 @@
  {;; Start dev-oriented environment:
   :dev {:extra-deps
         {;; Nicer REPL with vim bindings, etc:
-         com.bhauman/rebel-readline {:mvn/version "RELEASE"}
+         ;com.bhauman/rebel-readline {:mvn/version "RELEASE"}
          ;; nREPL middleware used by editors, etc:
          cider/cider-nrepl {:mvn/version "RELEASE"}
          ;; nREPL server/client:
          nrepl/nrepl {:mvn/version "RELEASE"}
          ;; Dynamically starts dev REPLs:
-         thiru/repl-base {:git/url "https://github.com/thiru/repl-base"
-                          :sha "cdaa0c743334f90eb36d422928c48af1dc50ae5b"}}
+         thiru/repl-base {;:local/root "../repl-base"
+                          :git/url "https://github.com/thiru/repl-base"
+                          :sha "608f4b8be3465c46fac52d50518ae16a9fe67bdc"}}
         :extra-paths ["dev"]
         :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}}
  :paths ["src"]
@@ -20,4 +21,5 @@
   com.nextjournal/beholder {:mvn/version "1.0.0"}
 
   ;; Namespace management utils:
-  org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
+  ;org.clojure/tools.namespace {:mvn/version "1.1.0"}
+  org.clojure/tools.namespace {:local/root "../tools.namespace"}}}

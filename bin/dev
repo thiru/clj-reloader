@@ -2,4 +2,4 @@
 
 echo "Starting dev-oriented REPL..."
 
-clojure -A:stacks -M:dev "$@"
+clojure -M:dev "$@"
