@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 
-# Starts the REPL in a development-friendly mode.
+echo "Starting dev-oriented REPL..."
 
-clojure -O:stacks -A:dev
+clojure -M:dev "$@"
