@@ -118,7 +118,10 @@
             num-ns-modified (count ns-modified)]
         (when (pos? num-ns-modified)
           (doseq [ns-sym ns-modified]
-            (require ns-sym :reload))
+            (try
+              (require ns-sym :reload)
+              (catch Throwable t
+                (println t))))
           (println (format "File '%s' was modified (%d namespace%s reloaded)"
                            file-name
                            num-ns-modified
