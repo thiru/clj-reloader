@@ -127,7 +127,7 @@
         (when (pos? num-ns-modified)
           (doseq [ns-sym ns-modified]
             (try
-              (require ns-sym :reload)
+              (require ns-sym :reload-all)
               (catch Throwable t
                 (ex-pprint t))))
           (println (format "File '%s' was modified (%d namespace%s reloaded)"
