@@ -1,11 +1,15 @@
 (ns reloader.core
   "Sole namespace containing all functionality of this library."
   (:require ;; Clojure Core:
+            [clojure.pprint :as pprint]
             [clojure.string :as str]
 
             ;; Third-Party:
             [ns-tracker.core :as nst]
-            [nextjournal.beholder :as beholder]))
+            [nextjournal.beholder :as beholder]
+
+            ;; Our Utils:
+            [reloader.utils :as u]))
 
 ;; ## Vars
 ;; ----------------------------------------------------------------------------
@@ -27,6 +31,10 @@
            * We store this in order to stop/restart the watcher
            * See `beholder/watch` for more info"}
   state (atom {}))
+
+(defonce ^{:doc "Function used to pretty-print exceptions."}
+  ex-pprint (or (u/try-resolving 'io.aviso.exception/write-exception)
+                pprint/pprint))
 
 ;; ## Primary API
 ;; ----------------------------------------------------------------------------
@@ -121,7 +129,7 @@
             (try
               (require ns-sym :reload)
               (catch Throwable t
-                (println t))))
+                (ex-pprint t))))
           (println (format "File '%s' was modified (%d namespace%s reloaded)"
                            file-name
                            num-ns-modified

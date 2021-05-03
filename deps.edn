@@ -5,6 +5,8 @@
          com.bhauman/rebel-readline {:mvn/version "RELEASE"}
          ;; nREPL middleware used by editors, etc:
          cider/cider-nrepl {:mvn/version "RELEASE"}
+         ;; Prettier exception printing:
+         io.aviso/pretty {:mvn/version "0.1.37"}
          ;; nREPL server/client:
          nrepl/nrepl {:mvn/version "RELEASE"}
          ;; Dynamically starts dev REPLs:
