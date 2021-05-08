@@ -19,6 +19,9 @@
             ;; Our Domain:
             [reloader.core :as reloader]))
 
+(defonce ^{:doc "Used to ensure we don't start more than once."}
+  started? (atom false))
+
 (defn setup-pretty-exceptions
   "Hook into exception printing and print with aviso library."
   []
@@ -26,11 +29,14 @@
                   (constantly [#"reloader.*" #"user"]))
   (aviso-repl/install-pretty-exceptions))
 
-(defonce started? (atom false))
+(defn start
+  "Start & init dev environment (only once)."
+  []
+  (when (not @started?)
+    (reset! started? true)
+    (setup-pretty-exceptions)
+    (reloader/start ["src" "dev"])
+    (repls/start)))
 
-(when (not @started?)
-  (reset! started? true)
-  (setup-pretty-exceptions)
-  (reloader/start ["src" "dev"])
-  (repls/start))
+(start)
 
