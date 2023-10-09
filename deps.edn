@@ -1,25 +1,21 @@
 {:aliases
  {;; Start dev-oriented environment:
-  :dev {:extra-deps
-        {;; Nicer REPL with vim bindings, etc:
-         com.bhauman/rebel-readline {:mvn/version "RELEASE"}
-         ;; nREPL middleware used by editors, etc:
-         cider/cider-nrepl {:mvn/version "RELEASE"}
-         ;; Prettier exception printing:
-         io.aviso/pretty {:mvn/version "RELEASE"}
-         ;; nREPL server/client:
-         nrepl/nrepl {:mvn/version "RELEASE"}
-         ;; Dynamically starts dev REPLs:
-         thiru/repl-base {:git/url "https://github.com/thiru/repl-base"
-                          :sha "178ac59d35098e0ac5c00e18d08d62fee0c252bf"}}
+  :dev {:extra-deps {;; Nicer REPL with vim bindings, etc:
+                     com.bhauman/rebel-readline {:mvn/version "0.1.4"}
+                     ;; nREPL middleware used by editors, etc:
+                     nrepl/nrepl {:mvn/version "1.0.0"}
+                     ;; Prettier exception printing:
+                     org.clj-commons/pretty {:mvn/version "2.2"}
+                     ;; Colourised Clojure pretty-printer:
+                     mvxcvi/puget {:mvn/version "1.3.4"}}
         :extra-paths ["dev"]
         :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}}
  :paths ["src"]
  :deps
- {org.clojure/clojure {:mvn/version "1.10.3"}
+ {org.clojure/clojure {:mvn/version "1.11.1"}
 
   ;; File-system watcher:
-  com.nextjournal/beholder {:mvn/version "1.0.0"}
+  com.nextjournal/beholder {:mvn/version "1.0.2"}
 
   ;; Keeps track of source files and associated namespaces:
   ns-tracker/ns-tracker {:mvn/version "0.4.0"}}}

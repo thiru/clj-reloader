@@ -4,39 +4,34 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.java.shell :as sh]
-            [clojure.pprint :refer :all]
-            [clojure.reflect :refer :all]
-            [clojure.repl :refer :all]
+            [clojure.pprint :as pp]
+            [clojure.reflect :as reflect]
             [clojure.string :as str]
 
             ;; Third-Party:
-            [io.aviso.exception :as aviso-ex]
-            [io.aviso.repl :as aviso-repl]
             [nextjournal.beholder :as beholder]
             [ns-tracker.core :as nst]
-            [repl-base.core :as repls]
+            [rebel-readline.main :as rebel]
 
             ;; Our Domain:
-            [reloader.core :as reloader]))
+            [reloader.core :as reloader]
+
+            ;; Our Utils:
+            [utils.nrepl :as nrepl]
+            [utils.printing :refer [PP]]))
 
 (defonce ^{:doc "Used to ensure we don't start more than once."}
   started? (atom false))
-
-(defn setup-pretty-exceptions
-  "Hook into exception printing and print with aviso library."
-  []
-  (alter-var-root #'aviso-ex/*app-frame-names*
-                  (constantly [#"reloader.*" #"user"]))
-  (aviso-repl/install-pretty-exceptions))
 
 (defn start
   "Start & init dev environment (only once)."
   []
   (when (not @started?)
     (reset! started? true)
-    (setup-pretty-exceptions)
+    (nrepl/start-server)
     (reloader/start ["src" "dev"])
-    (repls/start)))
+    ;; Blocking call:
+    (rebel/-main)
+    (nrepl/stop-server)))
 
 (start)
-

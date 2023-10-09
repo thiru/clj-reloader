@@ -32,10 +32,6 @@
            * See `beholder/watch` for more info"}
   state (atom {}))
 
-(defonce ^{:doc "Function used to pretty-print exceptions."}
-  ex-pprint (or (u/try-resolving 'io.aviso.exception/write-exception)
-                pprint/pprint))
-
 ;; ## Primary API
 ;; ----------------------------------------------------------------------------
 
@@ -129,7 +125,7 @@
             (try
               (require ns-sym :reload-all)
               (catch Throwable t
-                (ex-pprint t))))
+                (pprint/pprint t))))
           (println (format "File '%s' was modified (%d namespace%s reloaded)"
                            file-name
                            num-ns-modified
